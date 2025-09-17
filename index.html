@@ -3,28 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>도서관 기획단 동틀_북비티아이 테스트!</title>
+  <title>BOOKBTI 테스트</title>
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
       background: #f3f4f6;
+      margin: 0;
+      padding: 0;
     }
     .container {
-      max-width: 500px;
+      max-width: 600px;
+      margin: 1rem auto;
       background: #fff;
-      padding: 2rem;
+      padding: 1.5rem;
       border-radius: 1rem;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      text-align: center;
     }
-    h1, h2 {
+    h1 { text-align: center; margin-bottom: 1rem; font-size: 1.5rem; }
+    h2 { font-size: 1.2rem; }
+
+    /* ===== 탭 ===== */
+    .tabs {
+      display: flex;
+      justify-content: center;
       margin-bottom: 1rem;
+      flex-wrap: wrap;
+      border-bottom: 2px solid #ccc;
     }
+    .tab {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      margin: 0.25rem;
+      border-bottom: 3px solid transparent;
+      font-weight: bold;
+      transition: all 0.3s;
+      border-radius: 0.5rem 0.5rem 0 0;
+      background: #f9fafb;
+    }
+    .tab.active {
+      border-color: #ff6b6b;
+      color: #ff6b6b;
+      background: #ffecec;
+      font-size: 1.05rem;
+    }
+    .tab-content {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .tab-content.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* ===== 버튼 ===== */
     button {
       display: block;
       width: 100%;
@@ -36,75 +68,136 @@
       cursor: pointer;
       transition: background 0.3s;
     }
-    .btnA { background: #65ca6a; color: white; }
-    .btnA:hover { background: #468d4a; }
-    .btnB { background: #e4b15a; color: white; }
-    .btnB:hover { background: #b3802a; }
-    .hidden { display: none; }
+    .btnA { background: #6c5ce7; color: white; }
+    .btnA:hover { background: #341f97; }
+    .btnB { background: #fd79a8; color: white; }
+    .btnB:hover { background: #d6306c; }
+
+    /* ===== 결과 하얀 창 ===== */
+    #result {
+      display: none;
+      margin-top: 1rem;
+    }
+    #result .resultBox {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 1rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    #resultCode { font-size: 2.5rem; color: #ff6b6b; margin-bottom: 1rem; }
+    #resultDesc, #resultBook { font-size: 1.2rem; margin: 0.5rem 0; }
+
+    /* ===== 모바일 최적화 ===== */
+    @media (max-width: 480px) {
+      .container { padding: 1rem; margin: 0.5rem; }
+      h1 { font-size: 1.3rem; }
+      h2 { font-size: 1rem; }
+      .tab { flex: 1 1 45%; text-align: center; font-size: 0.9rem; padding: 0.5rem; }
+      button { padding: 1.2rem; font-size: 1.05rem; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>당신의 독서 성향은?</h1>
-    <div id="quiz">
-      <h2 id="question">질문이 여기에 나옵니다.</h2>
-      <button class="btnA" onclick="choose('A')">선택지 A</button>
-      <button class="btnB" onclick="choose('B')">선택지 B</button>
-      <p id="progress"></p>
+    <h1>BOOK.B.T.I 테스트</h1>
+
+    <!-- 탭 버튼 -->
+    <div class="tabs">
+      <div class="tab active" onclick="showTab(0)">설명</div>
+      <div class="tab" onclick="showTab(1)">테스트 시작</div>
     </div>
-    <div id="result" class="hidden">
-      <h2>당신의 독서 성향은?</h2>
-      <p id="resultText"></p>
-      <button onclick="restart()">다시하기</button>
+
+    <!-- 탭 내용 -->
+    <div class="tab-content active">
+      <h2>BOOK.B.T.I란?</h2>
+      <p>
+        BOOKBTI는 <b>정자유스센터 도서관 기획단 동틀 5기</b>가 만든 독서 성향 테스트입니다.<br>
+        장편/단편, 문학/비문학, 한국/외국, 혼자/함께 까지 총 4가지의 독서 성향을 측정하여<br>
+        당신의 독서 성향과 추천 도서를 알려줍니다.
+      </p>
+      <p>간단한 질문들을 통해 자신의 독서 유형을 확인해보세요!</p>
+      <p>
+         <b>성향 1.</b> 장편 (Long) / 단편 (Short)<br>
+         <b>성향 2.</b> 문학 (Fiction) / 비문학 (Nonfiction)<br>
+         <b>성향 3.</b> 한국도서 (Korean) / 외국도서 (Foreign)<br>
+         <b>성향 4.</b> 혼자 (Private) / 다같이 (Together)
+      </p>
+    </div>
+
+    <div class="tab-content">
+      <div id="quizContainer">
+        <div id="quiz">
+          <h2 id="question">질문이 여기에 나옵니다.</h2>
+          <button class="btnA" onclick="choose('A')">선택지 A</button>
+          <button class="btnB" onclick="choose('B')">선택지 B</button>
+          <p id="progress"></p>
+        </div>
+        <div id="result">
+          <div class="resultBox">
+            <h1 id="resultCode"></h1>
+            <p id="resultDesc"></p>
+            <p id="resultBook"></p>
+            <button onclick="restart()">다시하기</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
+    // ===== 탭 전환 =====
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+    function showTab(index) {
+      tabs.forEach((tab,i)=>tab.classList.toggle('active', i===index));
+      contents.forEach((c,i)=>c.classList.toggle('active', i===index));
+    }
+
+    // ===== BOOKBTI 퀴즈 =====
     const questions = [
-      // LS 영역 (장편/단편)
       { q: "질문 1. 한 권의 책을 끝까지 읽고 난 뒤 나는...", A: "정이 든 인물들을 쉽게 떠나보내는 것이 어렵다.", B: "얼른 또 다른 세계를 만나고 싶어 도서 플랫폼을 살펴본다.", type: "LS" },
       { q: "질문 2. 나는...", A: "하나의 큰 세계를 탐험하는 것이 즐겁다.", B: "짧고 굵게, 훅 치고 빠지는 이야기가 좋다.", type: "LS" },
       { q: "질문 3. 두꺼운 책을 보면 나는...", A: "이걸 다 읽고 말겠어! 도전정신이 생긴다.", B: "턱, 하고 숨이 막힌다.", type: "LS" },
-      // FN 영역 (문학/비문학)
-      { q: "질문 4. 문학 작품을 즐기시나요?", A: "네 (F)", B: "아니오 (N)", type: "FN" },
-      { q: "질문 5. 비문학 책을 더 자주 읽으시나요?", A: "아니오 (F)", B: "네 (N)", type: "FN" },
-      { q: "질문 6. 책을 통해 감정과 상상을 경험하는 걸 좋아하시나요?", A: "네 (F)", B: "아니오 (N)", type: "FN" },
-      // KoFo 영역 (한국/외국)
-      { q: "질문 7. 한국 문학을 좋아하시나요?", A: "네 (Ko)", B: "아니오, 외국문학 (Fo)", type: "KoFo" },
-      { q: "질문 8. 외국 문학이 흥미롭나요?", A: "아니오, 한국문학 (Ko)", B: "네 (Fo)", type: "KoFo" },
-      { q: "질문 9. 한국 작가의 작품을 주로 읽으시나요?", A: "네 (Ko)", B: "아니오 (Fo)", type: "KoFo" },
-      // PT 영역 (혼자/함께)
-      { q: "질문 10. 근처 도서관이나 서점에서 북토크를 진행한다면...", A: "이건 놓칠 수 없지! 친구와 함께 참여한다.", B: "글쎄, 딱히 구미가 당기지 않네. 참여하지 않는다.", type: "PT" },
-      { q: "질문 11. 내게 너무 완벽한 책을 만났을 때 나는...", A: "주변 사람과 마구 떠들고 싶어진다.", B: "천천히 필사하며 감상을 정리할 시간이 필요하다.", type: "PT" },
-      { q: "질문 12. 혼자 집중하며 읽는 게 편안하신가요?", A: "네 (P)", B: "아니오, 같이 (T)", type: "PT" }
+      { q: "질문 4. 책을 읽을 때 내가 기대하는 것은...", A: "마음을 울리는 문장과 감동적인 서사다.", B: "세상을 이해할 수 있는 지식과 정보다.", type: "FN" },
+      { q: "질문 5. 나에게 매력적인 책은...", A: "언어와 서사 자체가 아름답고 여운을 남기는 책이다.", B: "새로운 사실을 배우고 사고를 확장하게 해주는 책이다.", type: "FN" },
+      { q: "질문 6. 독서를 마친 뒤 나는...", A: "문장의 울림과 등장인물의 감정이 오래 남는다.", B: "얻은 정보와 지식을 삶에 어떻게 적용할지 생각한다.", type: "FN" },
+      { q: "질문 7. 외국 문학을 읽을 때 나는...", A: "이름이 너무 어려워... 안 읽는다.", B: "다른 나라 문화가 신기해! 즐거워 하며 읽는다.", type: "KoFo" },
+      { q: "질문 8. 책 속 언어와 분위기를 고를 때 나는...", A: "한국어 특유의 섬세한 뉘앙스와 정서를 좋아한다.", B: "번역을 통해서라도 다른 언어의 사고방식을 경험하는 게 좋다.", type: "KoFo" },
+      { q: "질문 9. 작품의 배경이 끌릴 때는...", A: "역시 아는 맛이 최고! 내가 살아온 공간과 닮은 한국 사회와 풍경일 때!", B: "새로운 게 좋아! 낯선 도시, 문화, 역사 속으로 들어갈 수 있을 때.", type: "KoFo" },
+      { q: "질문 10. 근처 도서관이나 서점에서 북토크를 진행한다면...", A: "글쎄, 딱히 구미가 당기지 않네. 참여하지 않는다.", B: "이건 놓칠 수 없지! 친구와 함께 참여한다.", type: "PT" },
+      { q: "질문 11. 내게 너무 완벽한 책을 만났을 때 나는...", A: "천천히 필사하며 감상을 정리할 시간이 필요하다.", B: "주변 사람과 마구 떠들고 싶어진다.", type: "PT" },
+      { q: "질문 12. 내가 서점을 차린다면...", A: "방해받지 않고 혼자 있는 조용한 필사 공간이 필수!", B: "다같이 이야기하며 의견을 나눌 수 있는 큰 테이블이 필수!", type: "PT" }
     ];
 
     let current = 0;
     let scores = { LS: 0, FN: 0, KoFo: 0, PT: 0 };
 
     const questionEl = document.getElementById("question");
-    const resultEl = document.getElementById("result");
     const quizEl = document.getElementById("quiz");
-    const resultText = document.getElementById("resultText");
+    const resultEl = document.getElementById("result");
+    const resultCode = document.getElementById("resultCode");
+    const resultDesc = document.getElementById("resultDesc");
+    const resultBook = document.getElementById("resultBook");
     const progressEl = document.getElementById("progress");
 
     const descriptions = {
-      "LFKoP": { desc: "[LFKoP] 장편을 선호하고 문학을 즐기는 당신! 한국문학을 혼자 깊이 읽는 성향이군요.", book: "추천 도서: 박경리 『토지』" },
-      "LFKoT": { desc: "[LFKoT] 장편과 문학을 사랑하며, 한국문학을 함께 나누길 좋아하는 당신!", book: "추천 도서: 황석영 『삼포 가는 길』" },
-      "LFFoP": { desc: "[LFFoP] 장편을 좋아하고, 외국 문학에 몰입하는 혼자 독서가 타입!", book: "추천 도서: 도스토예프스키 『죄와 벌』" },
-      "LFFoT": { desc: "[LFFoT] 장편 외국 문학을 함께 읽고 토론하는 것을 즐기는 당신!", book: "추천 도서: 톨스토이 『안나 카레니나』" },
-      "LNKoP": { desc: "[LNKoP] 장편을 즐기지만 비문학적 주제에도 관심이 많고, 한국문학을 혼자 읽는 독자!", book: "추천 도서: 이어령 『흔들리며 피는 꽃』" },
-      "LNKoT": { desc: "[LNKoT] 장편과 비문학을 좋아하며, 한국문학을 다른 이들과 공유하는 것을 즐기는군요.", book: "추천 도서: 신영복 『담론』" },
-      "LNFoP": { desc: "[LNFoP] 장편과 비문학을 즐기며, 외국의 지식을 혼자 탐구하는 독서가!", book: "추천 도서: 유발 하라리 『사피엔스』" },
-      "LNFoT": { desc: "[LNFoT] 장편 비문학과 외국 책을 좋아하고, 다른 이들과의 토론을 즐기는 당신!", book: "추천 도서: 칼 세이건 『코스모스』" },
-      "SFKoP": { desc: "[SFKoP] 단편을 선호하고 문학을 즐기며, 한국문학을 혼자 읽는 감성 독자!", book: "추천 도서: 김유정 『봄봄』" },
-      "SFKoT": { desc: "[SFKoT] 단편 문학을 좋아하고, 한국문학을 함께 읽으며 공감 나누기를 즐기는 타입!", book: "추천 도서: 현진건 『운수 좋은 날』" },
-      "SFFoP": { desc: "[SFFoP] 단편을 좋아하며, 외국 문학을 혼자 즐기는 독서가!", book: "추천 도서: 체호프 『카멜레온』" },
-      "SFFoT": { desc: "[SFFoT] 단편 외국 문학을 좋아하고, 함께 읽으며 생각을 나누는 걸 즐기는 당신!", book: "추천 도서: 오 헨리 『마지막 잎새』" },
-      "SNKoP": { desc: "[SNKoP] 단편과 비문학을 선호하며, 한국문학을 혼자 차분히 읽는 스타일!", book: "추천 도서: 법정 『무소유』" },
-      "SNKoT": { desc: "[SNKoT] 단편, 비문학을 선호하며 한국문학을 함께 읽으며 대화하는 것을 좋아하는 당신!", book: "추천 도서: 유홍준 『나의 문화유산답사기』" },
-      "SNFoP": { desc: "[SNFoP] 단편과 비문학을 즐기고, 외국의 책을 혼자 탐구하는 지적 독자!", book: "추천 도서: 스티븐 호킹 『시간의 역사』" },
-      "SNFoT": { desc: "[SNFoT] 단편과 비문학, 외국 문학을 함께 읽으며 지식을 나누는 타입!", book: "추천 도서: 말콤 글래드웰 『아웃라이어』" }
+      "LFKoP": { desc: "장편을 선호하고 문학을 즐기는 당신! 한국문학을 혼자 깊이 읽는 성향이군요.", book: "추천 도서: 박경리 『토지』" },
+      "LFKoT": { desc: "장편과 문학을 사랑하며, 한국문학을 함께 나누길 좋아하는 당신!", book: "추천 도서: 황석영 『삼포 가는 길』" },
+      "LFFoP": { desc: "장편을 좋아하고, 외국 문학에 몰입하는 혼자 독서가 타입!", book: "추천 도서: 도스토예프스키 『죄와 벌』" },
+      "LFFoT": { desc: "장편 외국 문학을 함께 읽고 토론하는 것을 즐기는 당신!", book: "추천 도서: 톨스토이 『안나 카레니나』" },
+      "LNKoP": { desc: "장편을 즐기지만 비문학적 주제에도 관심이 많고, 한국문학을 혼자 읽는 독자!", book: "추천 도서: 이어령 『흔들리며 피는 꽃』" },
+      "LNKoT": { desc: "장편과 비문학을 좋아하며, 한국문학을 다른 이들과 공유하는 것을 즐기는군요.", book: "추천 도서: 신영복 『담론』" },
+      "LNFoP": { desc: "장편과 비문학을 즐기며, 외국의 지식을 혼자 탐구하는 독서가!", book: "추천 도서: 유발 하라리 『사피엔스』" },
+      "LNFoT": { desc: "장편 비문학과 외국 책을 좋아하고, 다른 이들과의 토론을 즐기는 당신!", book: "추천 도서: 칼 세이건 『코스모스』" },
+      "SFKoP": { desc: "단편을 선호하고 문학을 즐기며, 한국문학을 혼자 읽는 감성 독자!", book: "추천 도서: 김유정 『봄봄』" },
+      "SFKoT": { desc: "단편 문학을 좋아하고, 한국문학을 함께 읽으며 공감 나누기를 즐기는 타입!", book: "추천 도서: 현진건 『운수 좋은 날』" },
+      "SFFoP": { desc: "단편을 좋아하며, 외국 문학을 혼자 즐기는 독서가!", book: "추천 도서: 체호프 『카멜레온』" },
+      "SFFoT": { desc: "단편 외국 문학을 좋아하고, 함께 읽으며 생각을 나누는 걸 즐기는 당신!", book: "추천 도서: 오 헨리 『마지막 잎새』" },
+      "SNKoP": { desc: "단편과 비문학을 선호하며, 한국문학을 혼자 차분히 읽는 스타일!", book: "추천 도서: 법정 『무소유』" },
+      "SNKoT": { desc: "단편, 비문학을 선호하며 한국문학을 함께 읽으며 대화하는 것을 좋아하는 당신!", book: "추천 도서: 유홍준 『나의 문화유산답사기』" },
+      "SNFoP": { desc: "단편과 비문학, 외국의 책을 혼자 탐구하는 지적 독자!", book: "추천 도서: 스티븐 호킹 『시간의 역사』" },
+      "SNFoT": { desc: "단편과 비문학, 외국 문학을 함께 읽으며 지식을 나누는 타입!", book: "추천 도서: 말콤 글래드웰 『아웃라이어』" }
     };
 
     function loadQuestion() {
@@ -127,8 +220,8 @@
     }
 
     function showResult() {
-      quizEl.classList.add("hidden");
-      resultEl.classList.remove("hidden");
+      quizEl.style.display = "none";
+      resultEl.style.display = "block";
 
       let LS = scores.LS > 0 ? "L" : "S";
       let FN = scores.FN > 0 ? "F" : "N";
@@ -137,14 +230,17 @@
 
       let key = LS + FN + KoFo + PT;
       let descObj = descriptions[key];
-      resultText.innerHTML = `<strong>${descObj.desc}</strong><br>${descObj.book}`;
+
+      resultCode.textContent = `[${key}]`;
+      resultDesc.textContent = descObj.desc;
+      resultBook.textContent = descObj.book;
     }
 
     function restart() {
       current = 0;
       scores = { LS: 0, FN: 0, KoFo: 0, PT: 0 };
-      quizEl.classList.remove("hidden");
-      resultEl.classList.add("hidden");
+      quizEl.style.display = "block";
+      resultEl.style.display = "none";
       loadQuestion();
     }
 
